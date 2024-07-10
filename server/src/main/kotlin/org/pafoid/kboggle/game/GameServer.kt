@@ -134,8 +134,9 @@ class GameServer(private val config: BoggleConfig) {
     fun join(user: User):Boolean {
         if(!users.map { it.name }.contains(user.name)) {
             if(!isValidUserName(user.name)) return false
-            users.add(User(UUID.randomUUID().toString(), user.name))
-            println("User: ${user.name} joined the game ")
+            val newUser = User(UUID.randomUUID().toString(), user.name)
+            users.add(newUser)
+            println("User: ${newUser.name} joined the game with id ${newUser.id} ")
             return true
         }
 

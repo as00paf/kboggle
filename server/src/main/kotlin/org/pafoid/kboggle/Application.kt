@@ -4,6 +4,7 @@ import SERVER_PORT
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.logging.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
@@ -11,8 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.pafoid.kboggle.game.BoggleConfig
 import org.pafoid.kboggle.game.GameServer
-import org.pafoid.kboggle.game.UserDTO
-import org.pafoid.kboggle.game.data
+import org.pafoid.kboggle.game.User
 import java.io.File
 
 val gameServer = GameServer(BoggleConfig.default)
@@ -29,8 +29,12 @@ fun Application.module() {
 
     routing {
         post("/join-game") {
-            val player = call.receive<UserDTO>().data()
-            gameServer.join(player)
+            try {
+                val player = call.receive<User>()
+                gameServer.join(player)
+            } catch (e: Exception) {
+                println("Error : ${e}")
+            }
 
             call.respond(gameServer.data)
         }
@@ -40,7 +44,6 @@ fun Application.module() {
         }
 
         get("/") {
-            //call.respondText("Welcome to the Boggle Game Server!")
             call.respondFile(File("server/src/main/resources/www/index.html"))
         }
     }
