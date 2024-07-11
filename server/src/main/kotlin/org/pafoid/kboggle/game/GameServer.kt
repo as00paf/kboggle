@@ -3,6 +3,7 @@ package org.pafoid.kboggle.game
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.pafoid.kboggle.game.state.GameState
 import java.util.*
 import kotlin.concurrent.schedule
@@ -22,9 +23,10 @@ class GameServer(private val config: BoggleConfig) {
 
     private var board: Board? = null
 
-    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int)
+    @Serializable
+    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val board: Board? = null, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int)
 
-    val data: Data by lazy { Data(users, prevUsers, isGameStarted, currentWords, currentMaxScore, currentTime) }
+    val data: Data by lazy { Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime) }
 
     init {
         println("Game server initialized")

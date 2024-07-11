@@ -1,0 +1,210 @@
+body{
+	background-color: #ddd;
+	font-family: Arial;
+}
+
+h2 {
+    text-align: center;
+}
+
+h1 {
+	font-size: 56px;
+	margin: 16px;
+}
+
+.name-prompt{
+	position: absolute;
+	left: 10%;
+	width: 80%;
+	height: 80%;
+	background-color: #eee;
+	z-index: 2;
+	padding: 10px;
+}
+
+.input-group{
+    margin: 16px;
+}
+
+.content{
+	height: auto;
+	margin: 16px;
+	font-size: 0;
+	display: none; /*was flex*/
+	flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.ranking{
+	width: 20%;
+	height: 600px;
+	vertical-align: middle;
+	background-color: white;
+	position: relative;
+	float: left;
+	overflow-y:auto;
+    margin:0 auto;
+}
+
+.leaderboard{
+
+}
+
+.user-label{
+	font-size: 14px;	
+	color: #5e5e5e;
+}
+
+.local-user-label{
+	font-weight: bold;
+}
+
+.highlighted-user-label{
+	background-color: red;
+}
+
+.spacer{
+    display: inline-block;
+	width:5%;
+	position: relative;
+}
+
+.arena{
+	background-color: white;
+	width: 50%;
+	height: 500px;
+	position: relative;
+}
+
+.game-timer{
+	text-align: center;
+	color: #ff0000;
+	font-size: 36px;
+}
+
+.timer-container{
+	width:20%;
+	height:56px;
+	margin: 16px auto;
+	position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.game-grid-container{
+	justify-content: center;
+	align-items: center; 
+	width: 80%;
+	height: 100%;
+	display: flex;
+	margin: 0 auto;
+	position: relative;
+}
+
+.game-grid{
+	width: 60%;
+	height: 60%;
+}
+
+.game-grid-item{
+	color: #ccc;
+	font-size: 48px;
+	text-align: center;
+	font-weight: bold;
+	border: 4px solid #eee;
+	padding: 8px;
+	background-color: white;
+}
+
+.game-grid-item-highlighted{
+	color: #ccc;
+	font-size: 48px;
+	text-align: center;
+	font-weight: bold;
+	border: 4px solid #eee;
+	padding: 8px;
+	background-color: blue;
+}
+
+.wordform{
+	width: 300px;
+	margin: 0 auto;
+	position: absolute;
+	bottom: 24px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.error-message{
+	width: 100%;
+	color: #ff0000;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+    transform: translate(0%, -150%);
+}
+
+.score-board{
+	width: 20%;	
+	height: 600px;
+	vertical-align: middle;
+	background-color: white;
+	position: relative;
+	float: right;
+	overflow-y: auto;
+}
+
+.wordboard {
+	padding : 10px;
+	overflow:auto;
+	height:450px;
+}
+
+.answerboard{
+	
+}
+
+.word-label{
+	font-size: 14px;	
+	color: #5eFF5e;
+	display: inline-block;
+}
+
+.wrong-word-label{
+	text-decoration: line-through;
+	color: #666666;
+}
+
+.found-word-label{
+	font-size: 14px;
+	color: purple;
+}
+
+.found-word-label:hover {
+    background: blue;
+}
+
+.unfound-word-label{
+	color: red;
+}
+
+.notfound-word-label{
+	color: blue;	
+}
+
+.user-score-container{
+	text-align: center;
+	background: #e5e5e5;
+}
+
+.user-score{
+	display: inline-block;
+	font-size: 22px;
+	text-align: center;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+.max-score{
+	font-size: 12px;
+}

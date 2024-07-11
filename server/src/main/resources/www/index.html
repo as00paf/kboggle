@@ -3,41 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Game</title>
-    <script>
-        function joinGame() {
-            const username = document.getElementById('username').value;
-            if (!username) {
-                alert('Please enter a username');
-                return;
-            }
+    <title>Boggle</title>
+    <meta name="description" content="A dope boggle game made in KMP">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-            const data = { name: username };
+    <link rel="stylesheet" href="css/boggle.css">
+    <link rel="shortcut icon" href="icon.png">
 
-            fetch('/join-game', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                // Handle the response data here
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/client.js"></script>
+
 </head>
 <body>
-<h1>Join Game</h1>
-<div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <button type="button" onclick="joinGame()">Join Game</button>
+
+<!-- Home/User prompt -->
+<div id="prompt" class="name-prompt">
+    <H1>Kolossal Boggle</H1>
+    <br/>
+    <div class="input-group">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" id="username" name="username" placeholder="Nom de joueur" required>
+        <button type="button" onclick="joinGame()">Jouer au Boggle!</button>
+    </div>
 </div>
+
+
+<!-- Content -->
+<div id="content" class="content">
+
+    <!-- Ranking -->
+    <div id="ranking" class="ranking">
+        <h2>Classement</h2>
+
+        <!-- Leaderboard -->
+        <ol id="leaderboard" class="leaderboard">
+            <!--li id="user-label-test" class="user-label">Test</li-->
+        </ol>
+    </div>
+
+    <!-- Spacer -->
+    <div id="spacer1" class="spacer">
+    </div>
+
+    <!-- Arena -->
+    <div id="arena" class="arena">
+        <!-- Time -->
+        <div class="timer-container">
+            <input id="timer" type="text" class="game-timer form-control" placeholder="0:00" autocomplete="off"
+                   disabled>
+        </div>
+
+        <!-- Game Grid -->
+        <div id="game-grid-container" class="game-grid-container">
+            <table id="game-grid" class="game-grid">
+                <tr>
+                    <td id="grid-item-1" class="game-grid-item">K</td>
+                    <td id="grid-item-2" class="game-grid-item">O</td>
+                    <td id="grid-item-3" class="game-grid-item">L</td>
+                    <td id="grid-item-4" class="game-grid-item">O</td>
+                </tr>
+                <tr>
+                    <td id="grid-item-5" class="game-grid-item">S</td>
+                    <td id="grid-item-6" class="game-grid-item">S</td>
+                    <td id="grid-item-7" class="game-grid-item">A</td>
+                    <td id="grid-item-8" class="game-grid-item">L</td>
+                </tr>
+                <tr>
+                    <td id="grid-item-9" class="game-grid-item">B</td>
+                    <td id="grid-item-10" class="game-grid-item">O</td>
+                    <td id="grid-item-11" class="game-grid-item">G</td>
+                    <td id="grid-item-12" class="game-grid-item">G</td>
+                </tr>
+                <tr>
+                    <td id="grid-item-13" class="game-grid-item">L</td>
+                    <td id="grid-item-14" class="game-grid-item">E</td>
+                    <td id="grid-item-15" class="game-grid-item">F</td>
+                    <td id="grid-item-16" class="game-grid-item">R</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Word -->
+        <div class="input-group wordform">
+            <input id="word" type="text" class="form-control" placeholder="Entrez un mot" autocomplete="off">
+            <span class="input-group-btn">
+				<input id="validate" class="btn btn-primary" type="submit" value="VALIDER">
+			  </span>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message"></div>
+    </div>
+
+    <!-- Spacer -->
+    <div id="spacer2" class="spacer">
+    </div>
+
+    <!-- Scoreboard -->
+    <div id="scoreboard" class="score-board">
+        <h2>Mots Trouvés</h2>
+        <div id="wordboard" class="wordboard">
+            <ul id="answerboard" class="answerboard"></ul>
+        </div>
+        <div id="user-score-container" class="user-score-container">
+            <span id="user-score" class="user-score">0 Points</span>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

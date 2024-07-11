@@ -4,6 +4,7 @@ import SERVER_PORT
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
 import io.ktor.server.logging.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -28,6 +29,8 @@ fun Application.module() {
     }
 
     routing {
+        staticFiles("/", File("server/src/main/resources/www"))
+
         post("/join-game") {
             try {
                 val player = call.receive<User>()
