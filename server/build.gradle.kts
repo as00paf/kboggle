@@ -16,12 +16,15 @@ application {
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
+
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.serialization)
     implementation(libs.ktor.server.statuspages)
     implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.logback)
+    implementation(libs.ktor.server.websockets)
+
+
     implementation(libs.kotlinx.coroutines.core)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 

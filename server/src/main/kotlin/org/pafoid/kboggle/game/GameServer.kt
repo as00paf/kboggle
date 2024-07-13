@@ -4,14 +4,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.pafoid.kboggle.game.data.WordGuessMessage
 import org.pafoid.kboggle.game.state.GameState
+import java.text.Normalizer
 import java.util.*
 import kotlin.concurrent.schedule
 
-class GameServer(private val config: BoggleConfig) {
+class GameServer(private val config: BoggleConfig, private val sync:suspend ()->Unit) {
     var gameState = GameState.INIT
 
-    private val users = mutableListOf<User>()
+    val users = mutableListOf<User>()
     private val prevUsers = mutableListOf<User>()
     private var isGameStarted = false
     private val currentWords = mutableListOf<String>()
@@ -24,9 +26,9 @@ class GameServer(private val config: BoggleConfig) {
     private var board: Board? = null
 
     @Serializable
-    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val board: Board? = null, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int)
+    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val board: Board? = null, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int, val currentState: String)
 
-    val data: Data by lazy { Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime) }
+    fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name) }
 
     init {
         println("Game server initialized")
@@ -36,9 +38,14 @@ class GameServer(private val config: BoggleConfig) {
         currentTime = config.gameLength
 
         CoroutineScope(Dispatchers.IO).launch {
-            solver.dictionary = solver.loadWordsFromResources(Boggle.DICTIONARY).filter { it.length >= 3 }
+            solver.dictionary = solver.loadWordsFromResources(Boggle.DICTIONARY).filter { it.length >= 3 }.map { it.removeAccents() }
             startGame()
         }
+    }
+
+    fun String.removeAccents(): String {
+        val normalized = Normalizer.normalize(this, Normalizer.Form.NFD)
+        return normalized.replace("\\p{InCombiningDiacriticalMarks}".toRegex(), "")
     }
 
     private fun startGame() {
@@ -69,7 +76,7 @@ class GameServer(private val config: BoggleConfig) {
         print("Time:$currentTime\r")
 
         if (currentTime == 0) {
-            endGame()
+            if(isGameStarted) endGame()
             return
         }
 
@@ -77,8 +84,9 @@ class GameServer(private val config: BoggleConfig) {
     }
 
     private fun endGame() {
+        isGameStarted = false
         println("Game ended, starting a new one in ${config.endScreenLength} seconds")
-
+        CoroutineScope(Dispatchers.IO).launch { sync() }
         timer.cancel()
 
         changeGameState(GameState.ENDED)
@@ -92,6 +100,7 @@ class GameServer(private val config: BoggleConfig) {
 
     private fun waitForRestart() {
         print("Wait time:$currentTime\r")
+        CoroutineScope(Dispatchers.IO).launch { sync() }
         if (currentTime == 0) {
             timer.cancel()
             restartGame()
@@ -117,6 +126,7 @@ class GameServer(private val config: BoggleConfig) {
 
     private fun changeGameState(newState: GameState) {
         gameState = newState
+        CoroutineScope(Dispatchers.IO).launch { sync() }
     }
 
     fun calculateScore(words: List<String>): Int {
@@ -133,15 +143,35 @@ class GameServer(private val config: BoggleConfig) {
         return true
     }
 
-    fun join(user: User):Boolean {
-        if(!users.map { it.name }.contains(user.name)) {
-            if(!isValidUserName(user.name)) return false
-            val newUser = User(UUID.randomUUID().toString(), user.name)
-            users.add(newUser)
-            println("User: ${newUser.name} joined the game with id ${newUser.id} ")
-            return true
+    fun join(user: User):User? {
+        if(users.map { it.name }.contains(user.name)) return users.find { it.name == user.name }
+        if(!isValidUserName(user.name)) return null
+
+        val newUser = User(user.id, user.name, 0)
+        users.add(newUser)
+        println("User: ${newUser.name} joined the game with id ${newUser.id} ")
+
+        return newUser
+    }
+
+    fun leave(userId: String) {
+        users.find { it.id == userId }?.let{
+            println("User ${it.name} left the game")
+            users.remove(it)
+        }
+    }
+
+    fun guessWord(data: WordGuessMessage): Int? {
+        val currentFoundWords = users.find { it.id == data.userId }?.foundWords.orEmpty()
+        if(!currentWords.contains(data.word) || currentFoundWords.contains(data.word)) return null
+        val points = calculateScore(listOf(data.word))
+        users.find { it.id == data.userId }?.let { user ->
+            user.score += points
+            if(points > 0) user.foundWords.add(data.word)
         }
 
-        return false
+        println("User[${data.userId}] successfully guessed the word : ${data.word} and scored $points points")
+
+        return points
     }
 }

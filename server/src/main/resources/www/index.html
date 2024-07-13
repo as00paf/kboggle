@@ -22,8 +22,8 @@
     <br/>
     <div class="input-group">
         <label for="username">Nom d'utilisateur:</label>
-        <input type="text" id="username" name="username" placeholder="Nom de joueur" required>
-        <button type="button" onclick="joinGame()">Jouer au Boggle!</button>
+        <input type="text" id="username" name="username" placeholder="Nom de joueur" autocomplete="off" required>
+        <button type="button" id="joinButton" onclick="joinGame()">Jouer au Boggle!</button>
     </div>
 </div>
 
@@ -34,11 +34,14 @@
     <!-- Ranking -->
     <div id="ranking" class="ranking">
         <h2>Classement</h2>
-
-        <!-- Leaderboard -->
-        <ol id="leaderboard" class="leaderboard">
-            <!--li id="user-label-test" class="user-label">Test</li-->
-        </ol>
+        <div id="leaderboard-container" class="leaderboard-container">
+            <h4>Classement provisoire</h4>
+            <hr/>
+            <!-- Leaderboard -->
+            <ol id="leaderboard" class="leaderboard">
+                <!--li id="user-label-test" class="user-label">Test</li-->
+            </ol>
+        </div>
     </div>
 
     <!-- Spacer -->
@@ -49,8 +52,7 @@
     <div id="arena" class="arena">
         <!-- Time -->
         <div class="timer-container">
-            <input id="timer" type="text" class="game-timer form-control" placeholder="0:00" autocomplete="off"
-                   disabled>
+            <input id="timer" type="text" class="game-timer" placeholder="0:00" autocomplete="off" disabled>
         </div>
 
         <!-- Game Grid -->
@@ -87,7 +89,7 @@
         <div class="input-group wordform">
             <input id="word" type="text" class="form-control" placeholder="Entrez un mot" autocomplete="off">
             <span class="input-group-btn">
-				<input id="validate" class="btn btn-primary" type="submit" value="VALIDER">
+				<input id="validateButton" onclick="sendWord()" class="btn btn-primary" type="submit" value="VALIDER">
 			  </span>
         </div>
 
@@ -101,12 +103,15 @@
 
     <!-- Scoreboard -->
     <div id="scoreboard" class="score-board">
-        <h2>Mots Trouvés</h2>
+        <h2 id="foundWordsLabel">Mots Trouvés</h2>
         <div id="wordboard" class="wordboard">
+            <h4>Résultats</h4>
+            <hr/>
             <ul id="answerboard" class="answerboard"></ul>
         </div>
         <div id="user-score-container" class="user-score-container">
-            <span id="user-score" class="user-score">0 Points</span>
+            <span id="user-score" class="user-score">0 Points</span><br/>
+            <span id="max-score" class="max-score">(Score maximum : 0 Points)</span>
         </div>
     </div>
 </div>
