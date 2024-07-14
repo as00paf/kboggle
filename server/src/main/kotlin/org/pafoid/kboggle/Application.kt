@@ -121,9 +121,10 @@ suspend fun onReceiveMessage(connection: Connection) {
     }
 }
 
-fun handleLeaveGame(connection: Connection, data: LeaveGameMessage) {
+suspend fun handleLeaveGame(connection: Connection, data: LeaveGameMessage) {
     connections.remove(connection)
     gameServer.leave(data.userId)
+    sync()
 }
 
 suspend fun sync() {
@@ -140,7 +141,7 @@ suspend fun handleJoinGame(connection: Connection, data: JoinGameMessage) {
     val newUser = gameServer.join(User(connection.id, data.name, 1, mutableListOf()))
     if (newUser == null) {
         // TODO: will change because of outcome class
-        println("error")
+        println("error joining game")
     } else {
         println("${newUser.name} joined the game!")
         connection.session?.sendSerialized(SyncMessage("game_joined", gameServer.data()))

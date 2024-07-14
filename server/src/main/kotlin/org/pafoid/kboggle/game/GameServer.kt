@@ -22,13 +22,14 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
     private val solver = Solver()
     private var timer = Timer()
     private val userFoundWords = mutableListOf<String>()
+    private val winners = mutableListOf<User>()
 
     private var board: Board? = null
 
     @Serializable
-    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val board: Board? = null, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int, val currentState: String)
+    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val board: Board? = null, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int, val currentState: String, val winners: List<User>)
 
-    fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name) }
+    fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name, winners) }
 
     init {
         println("Game server initialized")
@@ -86,8 +87,13 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
     private fun endGame() {
         isGameStarted = false
         println("Game ended, starting a new one in ${config.endScreenLength} seconds")
-        CoroutineScope(Dispatchers.IO).launch { sync() }
         timer.cancel()
+
+        if(winners.size >= 10 ) {
+            winners.removeAt(0)
+        }
+        val winner = users.maxBy { it.score }.copy()
+        winners.add(winner)
 
         changeGameState(GameState.ENDED)
 
