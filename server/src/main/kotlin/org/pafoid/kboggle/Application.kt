@@ -1,6 +1,15 @@
 package org.pafoid.kboggle
 
 import SERVER_PORT
+import data.ChatMessage
+import data.GameMessage
+import data.JoinGameMessage
+import data.LeaveGameMessage
+import data.SyncMessage
+import data.User
+import data.WordGuessMessage
+import data.WordGuessedMessage
+import game.BoggleConfig
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -25,16 +34,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import org.pafoid.kboggle.game.BoggleConfig
 import org.pafoid.kboggle.game.GameServer
-import org.pafoid.kboggle.game.User
-import org.pafoid.kboggle.game.data.ChatMessage
-import org.pafoid.kboggle.game.data.GameMessage
-import org.pafoid.kboggle.game.data.JoinGameMessage
-import org.pafoid.kboggle.game.data.LeaveGameMessage
-import org.pafoid.kboggle.game.data.SyncMessage
-import org.pafoid.kboggle.game.data.WordGuessMessage
-import org.pafoid.kboggle.game.data.WordGuessedMessage
 import java.io.File
 import java.time.Duration
 import java.util.*
@@ -82,6 +82,7 @@ fun Application.module() {
                     onReceiveMessage(connection)
                 }
             } catch (e: ClosedReceiveChannelException) {
+                e.printStackTrace()
                 println("onClose ${closeReason.await()}")
             } catch (e: Throwable) {
                 println("onError ${closeReason.await()}")
@@ -107,17 +108,26 @@ fun Application.module() {
 suspend fun onReceiveMessage(connection: Connection) {
     try {
         val session = connection.session ?: return
-        val message = session?.receiveDeserialized<GameMessage>()
+        /*for (frame in session.incoming) {
+            val txt = (frame as? Frame.Text)?.readText()
+            println("received message: $txt")
+        }
+        return*/
+        val message = session.receiveDeserialized<GameMessage>()
         when (message) {
             is JoinGameMessage -> handleJoinGame(connection, message)
             is WordGuessMessage -> handleWordGuess(connection, message)
             is ChatMessage -> handleChatMessage(connection, message)
             is LeaveGameMessage -> handleLeaveGame(connection, message)
-            else -> {}
+            else -> {
+                println("received unhandled message : $message")
+            }
         }
     } catch (e: Exception) {
         e.printStackTrace()
-        println("Error: $e")
+        println("Error: ${e.cause}")
+    } finally {
+        connections -= connection
     }
 }
 

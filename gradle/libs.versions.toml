@@ -16,6 +16,7 @@ kotlin = "2.0.0"
 ktor = "2.3.12"
 logback = "1.5.6"
 coroutines = "1.6.4"
+navigationCompose = "2.7.0-alpha07"
 serialization = "1.5.2"
 kxserialization = "1.7.1"
 
@@ -38,9 +39,15 @@ ktor-server-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json"
 ktor-server-statuspages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
+ktor-client-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 kotlinx-coroutines-core =  { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test =  { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-serialization-json =  { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kxserialization" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 
 [plugins]

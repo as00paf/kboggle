@@ -1,14 +1,15 @@
 package org.pafoid.kboggle.game
 
+import data.Position
+import data.Trie
+import data.isValid
+import game.Board
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.withContext
-import org.pafoid.kboggle.game.data.Position
-import org.pafoid.kboggle.game.data.Trie
-import org.pafoid.kboggle.game.data.isValid
 import java.util.concurrent.ConcurrentHashMap
 
 class Solver {

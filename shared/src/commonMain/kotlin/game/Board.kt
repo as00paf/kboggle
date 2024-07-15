@@ -1,7 +1,7 @@
-package org.pafoid.kboggle.game
+package game
 
 import kotlinx.serialization.Serializable
-import org.pafoid.kboggle.utils.selectRandomLetter
+import utils.selectRandomLetter
 
 @Serializable
 class Board(var letters:List<Char> = listOf()){

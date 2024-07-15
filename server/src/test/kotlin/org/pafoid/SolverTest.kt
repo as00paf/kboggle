@@ -1,8 +1,8 @@
 package org.pafoid
 
 import kotlinx.coroutines.runBlocking
-import org.pafoid.kboggle.game.Board
-import org.pafoid.kboggle.game.Boggle
+import game.Board
+import game.Boggle
 import org.pafoid.kboggle.game.Solver
 import kotlin.test.Test
 import kotlin.test.assertEquals

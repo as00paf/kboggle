@@ -1,10 +1,14 @@
 package org.pafoid.kboggle.game
 
+import data.Data
+import data.User
+import data.WordGuessMessage
+import game.Board
+import game.Boggle
+import game.BoggleConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import org.pafoid.kboggle.game.data.WordGuessMessage
 import org.pafoid.kboggle.game.state.GameState
 import java.text.Normalizer
 import java.util.*
@@ -25,9 +29,6 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
     private val winners = mutableListOf<User>()
 
     private var board: Board? = null
-
-    @Serializable
-    data class Data(val users:List<User>, val prevUsers: List<User>, val isGameStarted: Boolean, val board: Board? = null, val currentWords: List<String>, val currentMaxScore: Int, val currentTime:Int, val currentState: String, val winners: List<User>)
 
     fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name, winners) }
 
@@ -92,8 +93,11 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
         if(winners.size >= 10 ) {
             winners.removeAt(0)
         }
-        val winner = users.maxBy { it.score }.copy()
-        winners.add(winner)
+
+        if(users.isNotEmpty()) {
+            val winner = users.maxBy { it.score }.copy()
+            winners.add(winner)
+        }
 
         changeGameState(GameState.ENDED)
 
@@ -149,7 +153,7 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
         return true
     }
 
-    fun join(user: User):User? {
+    fun join(user: User): User? {
         if(users.map { it.name }.contains(user.name)) return users.find { it.name == user.name }
         if(!isValidUserName(user.name)) return null
 

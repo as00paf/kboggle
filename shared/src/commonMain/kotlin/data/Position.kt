@@ -1,4 +1,4 @@
-package org.pafoid.kboggle.game.data
+package data
 
 data class Position(val row: Int, val col: Int)
 

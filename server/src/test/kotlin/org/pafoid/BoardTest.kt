@@ -1,6 +1,6 @@
 package org.pafoid
 
-import org.pafoid.kboggle.game.Board
+import game.Board
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 

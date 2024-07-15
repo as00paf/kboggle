@@ -1,4 +1,4 @@
-package org.pafoid.kboggle.game
+package data
 
 import kotlinx.serialization.Serializable
 

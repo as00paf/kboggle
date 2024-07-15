@@ -1,4 +1,4 @@
-package org.pafoid.kboggle.game
+package game
 
 object Boggle {
 

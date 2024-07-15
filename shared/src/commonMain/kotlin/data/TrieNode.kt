@@ -1,4 +1,4 @@
-package org.pafoid.kboggle.game.data
+package data
 
 class TrieNode {
     val children = mutableMapOf<Char, TrieNode>()

@@ -1,4 +1,4 @@
-package org.pafoid.kboggle.utils
+package utils
 
 import kotlin.random.Random
 
