@@ -1,0 +1,37 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#f2f2f2" />
+  
+  <!-- Game Name -->
+  <text x="50%" y="15%" font-size="48" font-family="serif" fill="#333" text-anchor="middle">
+    Kolossal Boggle
+  </text>
+  
+  <!-- Boggle Grid -->
+  <g transform="translate(256, 256)">
+    <rect x="-100" y="-100" width="50" height="50" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+    <text x="-75" y="-70" font-size="24" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+      K
+    </text>
+    <rect x="-25" y="-100" width="50" height="50" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+    <text x="0" y="-70" font-size="24" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+      O
+    </text>
+    <rect x="50" y="-100" width="50" height="50" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+    <text x="75" y="-70" font-size="24" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+      L
+    </text>
+    <rect x="-100" y="-25" width="50" height="50" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+    <text x="-75" y="5" font-size="24" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+      O
+    </text>
+    <rect x="-25" y="-25" width="50" height="50" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+    <text x="0" y="5" font-size="24" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+      S
+    </text>
+    <rect x="50" y="-25" width="50" height="50" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+    <text x="75" y="5" font-size="24" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+      S
+    </text>
+  </g>
+</svg>

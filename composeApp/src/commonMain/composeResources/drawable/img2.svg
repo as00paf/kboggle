@@ -1,0 +1,104 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#f2f2f2" />
+
+  <!-- Game Name -->
+  <text x="50%" y="95%" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle">
+    Kolossal Boggle
+  </text>
+
+  <!-- Boggle Grid -->
+  <g transform="translate(80, 80)">
+    <!-- Dice -->
+    <g transform="translate(0, 0)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        K
+      </text>
+    </g>
+    <g transform="translate(100, 0)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        O
+      </text>
+    </g>
+    <g transform="translate(200, 0)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        L
+      </text>
+    </g>
+    <g transform="translate(300, 0)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        O
+      </text>
+    </g>
+    
+    <!-- Second Row -->
+    <g transform="translate(0, 100)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        S
+      </text>
+    </g>
+    <g transform="translate(100, 100)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        S
+      </text>
+    </g>
+    <g transform="translate(200, 100)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        A
+      </text>
+    </g>
+    <g transform="translate(300, 100)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        L
+      </text>
+    </g>
+    
+    <!-- Third Row -->
+    <g transform="translate(0, 200)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        B
+      </text>
+    </g>
+    <g transform="translate(100, 200)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        O
+      </text>
+    </g>
+    <g transform="translate(200, 200)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        G
+      </text>
+    </g>
+    <g transform="translate(300, 200)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        G
+      </text>
+    </g>
+    
+    <!-- Fourth Row -->
+    <g transform="translate(0, 300)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        L
+      </text>
+    </g>
+    <g transform="translate(100, 300)">
+      <rect width="80" height="80" rx="10" ry="10" fill="#d1d1d1" stroke="#333" stroke-width="2"/>
+      <text x="40" y="50" font-size="36" font-family="sans-serif" fill="#333" text-anchor="middle" alignment-baseline="middle">
+        E
+      </text>
+    </g>
+  </g>
+</svg>

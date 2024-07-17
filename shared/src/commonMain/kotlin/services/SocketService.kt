@@ -4,6 +4,7 @@ import data.ChatMessage
 import data.GameMessage
 import data.JoinGameMessage
 import data.LeaveGameMessage
+import data.TestMessage
 import data.WordGuessMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -42,6 +43,12 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
                         subclass(ChatMessage::class)
                         subclass(LeaveGameMessage::class)
                     }
+
+                    polymorphic(TestMessage::class) {
+                        subclass(TestMessage.TestJoinMessage::class)
+                        subclass(TestMessage.TestSyncMessage::class)
+                    }
+
                     prettyPrint = true
                 }
             })
@@ -55,7 +62,7 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
 
     suspend fun connect(onConnected: suspend () -> Unit, onMessage: (GameMessage) -> Unit) {
         try {
-            client.webSocket(host = "10.0.0.213", port = 8080, path = "comms") {
+            client.webSocket(url) {
                 println("Socket connected!")
                 session = this
                 isConnected = true

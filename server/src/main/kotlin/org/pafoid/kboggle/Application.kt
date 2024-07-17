@@ -61,7 +61,6 @@ fun Application.module() {
                     subclass(ChatMessage::class)
                     subclass(LeaveGameMessage::class)
                 }
-
             }
         })
 
@@ -126,8 +125,6 @@ suspend fun onReceiveMessage(connection: Connection) {
     } catch (e: Exception) {
         e.printStackTrace()
         println("Error: ${e.cause}")
-    } finally {
-        connections -= connection
     }
 }
 
