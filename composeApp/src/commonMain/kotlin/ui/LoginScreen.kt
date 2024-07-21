@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import data.JoinGameMessage
+import data.GameJoined
 import kboggle.composeapp.generated.resources.Res
 import kboggle.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.CoroutineScope
@@ -81,16 +81,21 @@ fun LoginScreen(navController: NavController, socketService: SocketService, game
 
             Button(
                 onClick = {
+                    navController.navigate(Screen.Game.route)
                     if (!isUserNameValid(username)) {
                         dialogMessage = "Vous devez entrer un nom d'utilisateur"
                         return@Button
                     }
                     CoroutineScope(Dispatchers.Default).launch {
                         socketService.connect ({
+                            println("Socket connected!")
                             gameService.joinGame(username)
                         }, {
                             gameService.handleMessage(it)
-                            if(it is JoinGameMessage) navController.navigate(Screen.Game.route)
+                            if(it is GameJoined) {
+                                println("Game joined!")
+                                navController.navigate(Screen.Game.route)
+                            }
                         })
                     }
                 },

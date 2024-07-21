@@ -1,22 +1,23 @@
 package services
 
-import data.ChatMessage
+import data.Chat
+import data.GameJoined
 import data.GameMessage
-import data.JoinGameMessage
-import data.LeaveGameMessage
-import data.TestMessage
-import data.WordGuessMessage
+import data.LeaveGame
+import data.Sync
+import data.WordGuess
+import data.dtos.GameMessageDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.sendSerialized
 import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.websocket.Frame
-import io.ktor.websocket.readText
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -38,22 +39,18 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
             contentConverter = KotlinxWebsocketSerializationConverter(Json {
                 serializersModule = SerializersModule {
                     polymorphic(GameMessage::class) {
-                        subclass(JoinGameMessage::class)
-                        subclass(WordGuessMessage::class)
-                        subclass(ChatMessage::class)
-                        subclass(LeaveGameMessage::class)
-                    }
-
-                    polymorphic(TestMessage::class) {
-                        subclass(TestMessage.TestJoinMessage::class)
-                        subclass(TestMessage.TestSyncMessage::class)
+                        subclass(GameJoined::class)
+                        subclass(Sync::class)
+                        subclass(WordGuess::class)
+                        subclass(Chat::class)
+                        subclass(LeaveGame::class)
                     }
 
                     prettyPrint = true
                 }
             })
 
-            pingInterval = 15000L
+            pingInterval = 15_000L
             maxFrameSize = Long.MAX_VALUE
         }
     }
@@ -63,15 +60,15 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
     suspend fun connect(onConnected: suspend () -> Unit, onMessage: (GameMessage) -> Unit) {
         try {
             client.webSocket(url) {
-                println("Socket connected!")
                 session = this
                 isConnected = true
                 onConnected()
                 try {
                     send(Frame.Text("First comm"))
                     for (frame in incoming) {
-                        println((frame as? Frame.Text)?.readText())
-                        //onMessage(receiveDeserialized())
+                        val message = receiveDeserialized<GameMessage>()
+                        println("Message received: $message")
+                        onMessage(message)
                     }
                 } catch (e: ClosedReceiveChannelException) {
                     println("onClose ${closeReason.await()}")
@@ -95,7 +92,7 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
         }
     }
 
-    suspend inline fun <reified T:GameMessage> send(message: T) {
+    suspend inline fun <reified T:GameMessageDTO> send(message: T) {
         if (session == null) {
             println("Session is null")
             return

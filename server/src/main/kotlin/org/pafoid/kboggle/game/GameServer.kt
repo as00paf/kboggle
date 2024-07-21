@@ -2,7 +2,7 @@ package org.pafoid.kboggle.game
 
 import data.Data
 import data.User
-import data.WordGuessMessage
+import data.WordGuess
 import game.Board
 import game.Boggle
 import game.BoggleConfig
@@ -171,7 +171,7 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
         }
     }
 
-    fun guessWord(data: WordGuessMessage): Int? {
+    fun guessWord(data: WordGuess): Int? {
         val currentFoundWords = users.find { it.id == data.userId }?.foundWords.orEmpty()
         if(!currentWords.contains(data.word) || currentFoundWords.contains(data.word)) return null
         val points = calculateScore(listOf(data.word))

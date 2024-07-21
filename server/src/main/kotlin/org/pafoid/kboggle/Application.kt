@@ -1,14 +1,15 @@
 package org.pafoid.kboggle
 
 import SERVER_PORT
-import data.ChatMessage
+import data.Chat
+import data.GameJoined
 import data.GameMessage
-import data.JoinGameMessage
-import data.LeaveGameMessage
-import data.SyncMessage
+import data.JoinGame
+import data.LeaveGame
+import data.Sync
 import data.User
-import data.WordGuessMessage
-import data.WordGuessedMessage
+import data.WordGuess
+import data.dtos.GameMessageDTO
 import game.BoggleConfig
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
@@ -56,10 +57,12 @@ fun Application.module() {
         contentConverter = KotlinxWebsocketSerializationConverter(Json {
             serializersModule = SerializersModule {
                 polymorphic(GameMessage::class) {
-                    subclass(JoinGameMessage::class)
-                    subclass(WordGuessMessage::class)
-                    subclass(ChatMessage::class)
-                    subclass(LeaveGameMessage::class)
+                    subclass(JoinGame::class)
+                    subclass(GameJoined::class)
+                    subclass(WordGuess::class)
+                    subclass(Sync::class)
+                    subclass(Chat::class)
+                    subclass(LeaveGame::class)
                 }
             }
         })
@@ -92,6 +95,7 @@ fun Application.module() {
             } finally {
                 println("Removing $connection!")
                 connections -= connection
+                sync()
             }
         }
 
@@ -114,10 +118,10 @@ suspend fun onReceiveMessage(connection: Connection) {
         return*/
         val message = session.receiveDeserialized<GameMessage>()
         when (message) {
-            is JoinGameMessage -> handleJoinGame(connection, message)
-            is WordGuessMessage -> handleWordGuess(connection, message)
-            is ChatMessage -> handleChatMessage(connection, message)
-            is LeaveGameMessage -> handleLeaveGame(connection, message)
+            is JoinGame -> handleJoinGame(connection, message)
+            is WordGuess -> handleWordGuess(connection, message)
+            is Chat -> handleChatMessage(connection, message)
+            is LeaveGame -> handleLeaveGame(connection, message)
             else -> {
                 println("received unhandled message : $message")
             }
@@ -128,7 +132,7 @@ suspend fun onReceiveMessage(connection: Connection) {
     }
 }
 
-suspend fun handleLeaveGame(connection: Connection, data: LeaveGameMessage) {
+suspend fun handleLeaveGame(connection: Connection, data: LeaveGame) {
     connections.remove(connection)
     gameServer.leave(data.userId)
     sync()
@@ -139,11 +143,11 @@ suspend fun sync() {
     val gameConnections = connections.filter { userIds.contains(it.id) }
 
     gameConnections.forEach {
-        it.session?.sendSerialized(SyncMessage("sync", gameServer.data()))
+        it.session?.sendSerialized(GameMessageDTO.Sync(gameServer.data()))
     }
 }
 
-suspend fun handleJoinGame(connection: Connection, data: JoinGameMessage) {
+suspend fun handleJoinGame(connection: Connection, data: JoinGame) {
     println("handleJoinGame")
     val newUser = gameServer.join(User(connection.id, data.name, 1, mutableListOf()))
     if (newUser == null) {
@@ -151,18 +155,18 @@ suspend fun handleJoinGame(connection: Connection, data: JoinGameMessage) {
         println("error joining game")
     } else {
         println("${newUser.name} joined the game!")
-        connection.session?.sendSerialized(SyncMessage("game_joined", gameServer.data()))
         sync()
+        connection.session?.sendSerialized(GameMessageDTO.GameJoined(newUser.name, gameServer.data()))
     }
 }
 
-suspend fun handleWordGuess(connection: Connection, data: WordGuessMessage) {
+suspend fun handleWordGuess(connection: Connection, data: WordGuess) {
     val points = gameServer.guessWord(data)
-    connection.session?.sendSerialized(WordGuessedMessage("word_guess", data.word, points, gameServer.data()))
+    connection.session?.sendSerialized(GameMessageDTO.WordGuessed(data.word, points, gameServer.data()))
     if(points != null) { sync() }
 }
 
-suspend fun handleChatMessage(connection: Connection, data: ChatMessage) {
+suspend fun handleChatMessage(connection: Connection, data: Chat) {
 
 }
 

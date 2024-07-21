@@ -12,4 +12,3 @@ data class BoggleConfig(
         val speed by lazy { BoggleConfig(180, 30, 3, 100) }
     }
 }
-

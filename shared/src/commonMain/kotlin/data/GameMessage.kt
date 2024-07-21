@@ -10,25 +10,31 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Polymorphic
 sealed class GameMessage
+@Serializable
+@SerialName("JoinGame")
+data class JoinGame(val name: String) : GameMessage()
 
 @Serializable
-@SerialName("JoinGameMessage")
-data class JoinGameMessage(val name: String) : GameMessage()
+@SerialName("LeaveGame")
+data class LeaveGame(val userId: String) : GameMessage()
 
 @Serializable
-@SerialName("LeaveGameMessage")
-data class LeaveGameMessage(val userId: String) : GameMessage()
+@SerialName("GameJoined")
+data class GameJoined(val name: String, val gameData: Data): GameMessage()
 
 @Serializable
-@SerialName("WordGuessMessage")
-data class WordGuessMessage(val userId: String, val word: String) : GameMessage()
+@SerialName("WordGuess")
+data class WordGuess(val userId: String, val word: String) : GameMessage()
 
 @Serializable
-@SerialName("ChatMessage")
-data class ChatMessage(val userId: String, val chat: String) : GameMessage()
+@SerialName("Chat")
+data class Chat(val userId: String, val chat: String) : GameMessage()
 
 @Serializable
-data class SyncMessage(val type: String, val gameData: Data)
+@SerialName("Sync")
+data class Sync(val gameData: Data): GameMessage()
 
 @Serializable
-data class WordGuessedMessage(val type: String, val word: String?, val points:Int?, val gameData: Data)
+@SerialName("WordGuessed")
+data class WordGuessed(val type: String, val word: String?, val points:Int?, val gameData: Data)
+

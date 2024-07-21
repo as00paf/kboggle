@@ -27,15 +27,15 @@ ws.onerror = (error) => {
 };
 
 function handleMessage(data) {
-    //console.log('Received message: '+ data.type, data);
+    console.log('Received message: '+ data.type, data);
     switch (data.type) {
-        case "game_joined":
+        case "GameJoined":
             onGameJoined(data.gameData);
             break;
-        case "sync":
+        case "Sync":
             updateUI(data.gameData);
             break;
-        case "word_guess":
+        case "WordGuessed":
             onWordGuessed(data);
             break;
     }
@@ -51,7 +51,7 @@ function joinGame() {
     this.username = username;
 
     const data = {
-        type: "JoinGameMessage",
+        type: "JoinGame",
         name: username
     };
     const payload = JSON.stringify(data)
@@ -351,7 +351,7 @@ function showGameMessage(message) {
 function sendWord() {
     var word = $("#word").val().toLowerCase();
     const data = {
-        type: "WordGuessMessage",
+        type: "WordGuess",
         userId: this.userId,
         word: word
     };
@@ -417,7 +417,7 @@ $(window).on('beforeunload', function() {
 $(window).on('unload', function() {
     console.log("leaveGame : " + userId);
     const data = {
-        type: "LeaveGameMessage",
+        type: "LeaveGame",
         userId: this.userId
     };
     const payload = JSON.stringify(data)
