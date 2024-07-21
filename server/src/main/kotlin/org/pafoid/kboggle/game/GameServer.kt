@@ -106,11 +106,12 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
         timer.schedule(0, config.interval) {
             waitForRestart()
         }
+
+        CoroutineScope(Dispatchers.IO).launch { sync() }
     }
 
     private fun waitForRestart() {
         print("Wait time:$currentTime\r")
-        CoroutineScope(Dispatchers.IO).launch { sync() }
         if (currentTime == 0) {
             timer.cancel()
             restartGame()
