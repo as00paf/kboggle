@@ -13,14 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import services.GameService
-import services.SocketService
+import viewmodels.GameScreenViewModel
 
 @Composable
 @Preview
-fun GameScreen(navController: NavController, socketService: SocketService, gameService: GameService) {
+fun GameScreen(viewModel: GameScreenViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -28,7 +26,7 @@ fun GameScreen(navController: NavController, socketService: SocketService, gameS
     ) { // Background color
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
             Text(
                 text = "Game",

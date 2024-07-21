@@ -25,21 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import data.GameJoined
 import kboggle.composeapp.generated.resources.Res
 import kboggle.composeapp.generated.resources.compose_multiplatform
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import services.GameService
-import services.SocketService
+import viewmodels.LoginScreenViewModel
 
 @Composable
 @Preview
-fun LoginScreen(navController: NavController, socketService: SocketService, gameService: GameService) {
+fun LoginScreen(viewModel: LoginScreenViewModel) {
     var username by rememberSaveable { mutableStateOf("") }
     var dialogMessage by remember { mutableStateOf("") }
 
@@ -81,23 +75,11 @@ fun LoginScreen(navController: NavController, socketService: SocketService, game
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.Game.route)
-                    if (!isUserNameValid(username)) {
+                    if (!viewModel.isUserNameValid(username)) {
                         dialogMessage = "Vous devez entrer un nom d'utilisateur"
                         return@Button
                     }
-                    CoroutineScope(Dispatchers.Default).launch {
-                        socketService.connect ({
-                            println("Socket connected!")
-                            gameService.joinGame(username)
-                        }, {
-                            gameService.handleMessage(it)
-                            if(it is GameJoined) {
-                                println("Game joined!")
-                                navController.navigate(Screen.Game.route)
-                            }
-                        })
-                    }
+                    viewModel.joinGame(username)
                 },
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -118,8 +100,4 @@ fun LoginScreen(navController: NavController, socketService: SocketService, game
             }
         )
     }
-}
-
-fun isUserNameValid(username: String): Boolean {
-    return username.isNotEmpty()
 }

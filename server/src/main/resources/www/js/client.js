@@ -154,7 +154,7 @@ function formatTime(seconds) {
 
 function updateUI(data) {
     // Update game data
-    var prevState = this.gameData.currentState;
+    var prevState = this.gameData ? this.gameData.currentState : null;
     this.gameData = data;
 
     var maxWordsCount = data.currentWords.length;
