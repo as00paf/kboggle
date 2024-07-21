@@ -38,7 +38,7 @@ kotlin {
     
     jvm("desktop")
     
-    listOf(
+    /*listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
@@ -47,7 +47,7 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
-    }
+    }*/
     
     sourceSets {
         val desktopMain by getting
@@ -55,8 +55,16 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.cio)
         }
         commonMain.dependencies {
+            implementation(projects.shared)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.content.negotiation)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -65,11 +73,17 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.navigation.compose)
             implementation(libs.viewmodel.compose)
-
-            implementation(projects.shared)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
+        }
+        wasmJsMain.dependencies {
+            implementation("io.ktor:ktor-http-cio-wasm-js:3.0.0-beta-2")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm-js:1.9.0-RC")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+            implementation(libs.ktor.client.cio)
         }
     }
 }
@@ -108,6 +122,7 @@ android {
     }
     dependencies {
         debugImplementation(compose.uiTooling)
+        implementation(libs.ktor.client.cio)
     }
 }
 dependencies {

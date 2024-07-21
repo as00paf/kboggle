@@ -1,4 +1,4 @@
-package ui
+package org.pafoid.kboggle.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,11 +14,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import viewmodels.GameScreenViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.pafoid.kboggle.viewmodels.GameScreenViewModel
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 @Preview
-fun GameScreen(viewModel: GameScreenViewModel) {
+fun GameScreen() {
+    val viewModel: GameScreenViewModel = koinViewModel()
     Box(
         modifier = Modifier
             .fillMaxSize()

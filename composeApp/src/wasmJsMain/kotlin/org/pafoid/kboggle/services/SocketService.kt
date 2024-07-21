@@ -1,4 +1,4 @@
-package services
+package org.pafoid.kboggle.services
 
 import data.Chat
 import data.GameJoined
@@ -8,7 +8,7 @@ import data.Sync
 import data.WordGuess
 import data.dtos.GameMessageDTO
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.js.Js
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
@@ -25,9 +25,14 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 
 
-class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
+actual class SocketService {
+    actual val url: String = "ws://10.0.0.213:8080/comms"
+
+    var session: DefaultClientWebSocketSession? = null
+
     var isConnected: Boolean = false
-    val client = HttpClient(CIO) {
+
+    val client = HttpClient(Js) {
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true
@@ -55,9 +60,7 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
         }
     }
 
-    var session: DefaultClientWebSocketSession? = null
-
-    suspend fun connect(onConnected: suspend () -> Unit, onMessage: (GameMessage) -> Unit) {
+    actual suspend fun connect(onConnected: suspend () -> Unit, onMessage: (GameMessage) -> Unit) {
         try {
             client.webSocket(url) {
                 session = this
@@ -92,7 +95,7 @@ class SocketService(private val url: String = "ws://10.0.0.213:8080/comms") {
         }
     }
 
-    suspend inline fun <reified T:GameMessageDTO> send(message: T) {
+    actual suspend inline fun <reified T: GameMessageDTO> send(message: T) {
         if (session == null) {
             println("Session is null")
             return

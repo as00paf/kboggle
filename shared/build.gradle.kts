@@ -32,9 +32,9 @@ kotlin {
         }
     }
     
-    iosX64()
+    /*iosX64()
     iosArm64()
-    iosSimulatorArm64()
+    iosSimulatorArm64()*/
     
     jvm()
     
@@ -42,21 +42,17 @@ kotlin {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.kotlinx.coroutines.core)
-
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.websockets)
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.client.content.negotiation)
         }
         jvmMain.dependencies {
-
-
-
+            implementation(libs.kotlinx.coroutines.core)
         }
-        wasmJsMain.dependencies {
+        androidMain.dependencies {
+            implementation(libs.kotlinx.coroutines.core)
+        }
 
+        wasmJsMain.dependencies {
+            implementation("io.ktor:ktor-http-cio-wasm-js:3.0.0-beta-2")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-wasm-js:1.9.0-RC")
         }
     }
 }

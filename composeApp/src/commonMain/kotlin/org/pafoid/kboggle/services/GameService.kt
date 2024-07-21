@@ -1,4 +1,4 @@
-package services
+package org.pafoid.kboggle.services
 
 
 import data.Chat

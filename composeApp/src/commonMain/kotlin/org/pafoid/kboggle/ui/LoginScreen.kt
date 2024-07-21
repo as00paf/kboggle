@@ -1,4 +1,4 @@
-package ui
+package org.pafoid.kboggle.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,11 +29,16 @@ import kboggle.composeapp.generated.resources.Res
 import kboggle.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import viewmodels.LoginScreenViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.pafoid.kboggle.viewmodels.LoginScreenViewModel
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 @Preview
-fun LoginScreen(viewModel: LoginScreenViewModel) {
+fun LoginScreen() {
+    val viewModel: LoginScreenViewModel = koinViewModel()
+
     var username by rememberSaveable { mutableStateOf("") }
     var dialogMessage by remember { mutableStateOf("") }
 

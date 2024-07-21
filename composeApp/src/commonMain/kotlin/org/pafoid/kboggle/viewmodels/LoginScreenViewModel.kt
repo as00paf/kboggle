@@ -1,19 +1,19 @@
-package viewmodels
+package org.pafoid.kboggle.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import data.GameJoined
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import services.GameService
-import services.SocketService
-import ui.Screen
+import org.pafoid.kboggle.services.GameService
+import org.pafoid.kboggle.services.SocketService
+import org.pafoid.kboggle.ui.Screen
 
 class LoginScreenViewModel(
-    private val navController: NavController,
-    private val socketService:SocketService,
-    private val gameService:GameService
+    private val navController: NavHostController,
+    private val socketService: SocketService,
+    private val gameService: GameService
 ): ViewModel() {
     fun isUserNameValid(username: String): Boolean {
         return username.isNotEmpty()
