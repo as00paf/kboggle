@@ -10,7 +10,7 @@ import org.koin.compose.koinInject
 fun Navigation() {
     val navController = koinInject<NavHostController>()
 
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
+    NavHost(navController = navController, startDestination = Screen.Game.route) {
         composable(Screen.Login.route) {
             LoginScreen()
         }

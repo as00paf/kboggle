@@ -52,10 +52,13 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
 
     private fun startGame() {
         CoroutineScope(Dispatchers.IO).launch {
-            board = Board()
-            currentWords.clear()
-            currentWords.addAll(solver.solve(board!!))
-            currentMaxScore = calculateScore(currentWords)
+            currentMaxScore = 0
+            while(currentMaxScore == 0) {
+                board = Board()
+                currentWords.clear()
+                currentWords.addAll(solver.solve(board!!))
+                currentMaxScore = calculateScore(currentWords)
+            }
 
             println("Board solved, ${currentWords.size} words are possible for a total of $currentMaxScore points")
 
