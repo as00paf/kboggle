@@ -16,11 +16,9 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.http.content.staticFiles
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respondFile
-import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import io.ktor.server.websocket.WebSockets
@@ -35,7 +33,6 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import org.pafoid.kboggle.game.GameServer
-import java.io.File
 import java.time.Duration
 import java.util.*
 
@@ -73,7 +70,9 @@ fun Application.module() {
     }
 
     routing {
-        staticFiles("/", File("server/src/main/resources/www"))
+        staticResources("/", "www") {
+            default("www/index.html")
+        }
 
         webSocket("/comms") {
             val connection = Connection(UUID.randomUUID().toString(), this)
@@ -96,10 +95,6 @@ fun Application.module() {
                 connections -= connection
                 sync()
             }
-        }
-
-        get("/") {
-            call.respondFile(File("server/src/main/resources/www/index.html"))
         }
     }
 
