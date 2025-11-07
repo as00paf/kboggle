@@ -13,7 +13,7 @@ COPY . .
 RUN gradle :server:shadowJar --no-daemon
 
 # Runtime stage
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy the built jar from build stage

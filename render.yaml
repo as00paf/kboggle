@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: your-app-name
+    name: kboggle
     env: java
     buildCommand: ./gradlew :server:shadowJar
     startCommand: java -jar server/build/libs/your-app.jar
