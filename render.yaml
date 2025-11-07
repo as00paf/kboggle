@@ -3,4 +3,4 @@ services:
     name: kboggle
     env: java
     buildCommand: ./gradlew :server:shadowJar
-    startCommand: java -jar server/build/libs/your-app.jar
+    startCommand: java -jar server/build/libs/your-app.jar -Xmx512m -Xms512m

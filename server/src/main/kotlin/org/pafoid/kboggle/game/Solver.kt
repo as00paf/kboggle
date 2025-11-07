@@ -1,10 +1,12 @@
+@file:OptIn(DelicateCoroutinesApi::class)
+
 package org.pafoid.kboggle.game
 
 import data.Position
-import data.Trie
 import data.isValid
 import game.Board
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

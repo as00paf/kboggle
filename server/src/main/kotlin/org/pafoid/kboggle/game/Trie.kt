@@ -1,4 +1,4 @@
-package data
+package org.pafoid.kboggle.game
 
 class Trie {
     private val root = TrieNode()

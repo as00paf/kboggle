@@ -23,4 +23,4 @@ COPY --from=build /app/server/build/libs/*-all.jar app.jar
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-Xmx512m", "-Xms512m", "-XX:+UseSerialGC", "-jar", "app.jar"]
