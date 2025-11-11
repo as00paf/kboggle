@@ -107,11 +107,13 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
             winners.add(winner)
         }
 
-        changeGameState(GameState.ENDED)
 
         currentTime = config.endScreenLength
+        changeGameState(GameState.ENDED)
+
         timer = Timer()
         timer.schedule(0, config.interval) {
+            changeGameState(GameState.RESTARTING)
             waitForRestart()
         }
 
