@@ -33,19 +33,19 @@ class MessageHandler(private val socketService: SocketService, private val gameS
         }
     }
 
-    private suspend fun sync() {
+    private fun sync() {
         socketService.sendToAll(Sync(gameServer.data()))
     }
 
-    private suspend fun handleLeaveGame(data: LeaveGame) {
+    private fun handleLeaveGame(data: LeaveGame) {
         gameServer.leave(data.userId)
         sync()
     }
 
-    private suspend fun handleJoinGame(sessionId: String, data: JoinGame) {
+    private fun handleJoinGame(sessionId: String, data: JoinGame) {
         println("handleJoinGame")
         val userId = UUID.randomUUID().toString()
-        val newUser = gameServer.join(User(userId, data.name, 0, mutableListOf()))
+        val newUser = gameServer.join(User(userId, data.name))
         if (newUser == null) {
             // TODO: will change because of outcome class
             println("error joining game")
@@ -53,17 +53,16 @@ class MessageHandler(private val socketService: SocketService, private val gameS
             println("${newUser.name} joined the game!")
             sync()
             socketService.sendToConnection(sessionId, GameJoined(newUser.name, gameServer.data()))
-
         }
     }
 
-    private suspend fun handleWordGuess(sessionId: String, data: WordGuess) {
+    private fun handleWordGuess(sessionId: String, data: WordGuess) {
         val points = gameServer.guessWord(data)
         socketService.sendToConnection(sessionId, WordGuessed(data.word, points, gameServer.data()))
         if(points != null) { sync() }
     }
 
-    private suspend fun handleChatMessage(data: Chat) {
+    private fun handleChatMessage(data: Chat) {
 
     }
 

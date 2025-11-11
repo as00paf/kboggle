@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.withContext
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class Solver {
 
-    lateinit var dictionary: List<String>
+    lateinit var dictionary: Set<String>
 
     suspend fun loadWordsFromResources(fileName: String): List<String> = withContext(Dispatchers.IO) {
         val classLoader = this::class.java.classLoader
@@ -24,7 +25,6 @@ class Solver {
             ?: throw IllegalArgumentException("File not found: $fileName")
         println("Loading dictionary")
         inputStream.bufferedReader().readLines()
-        //TODO: replace special chars
     }
 
     suspend fun solve(board: Board): Set<String> {
@@ -46,7 +46,7 @@ class Solver {
             }
         }
 
-        jobs.forEach { it.join() }
+        jobs.joinAll()
 
         println("Found acceptable word: ${foundWords.sorted()}")
         return foundWords

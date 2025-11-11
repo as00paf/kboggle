@@ -23,6 +23,8 @@ import io.ktor.server.websocket.sendSerialized
 import io.ktor.server.websocket.timeout
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -41,6 +43,8 @@ class SocketService {
 
     private val broadcastFlow = MutableSharedFlow<GameMessage>()
     private val connections = ConcurrentHashMap<String, Connection>()
+
+    private val context = CoroutineScope(Dispatchers.IO)
 
     fun start() {
         embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0") {
@@ -110,16 +114,16 @@ class SocketService {
             .start(wait = true)
     }
 
-    suspend fun sendToAll(message: GameMessage) {
+    fun sendToAll(message: GameMessage) = context.launch {
         broadcastFlow.emit(message)
     }
 
-    suspend fun sendToConnection(connectionId: String, message: GameMessage) {
+    fun sendToConnection(connectionId: String, message: GameMessage) = context.launch {
         val connection = connections[connectionId]
         connection?.specificFlow?.emit(message)
     }
 
-    suspend fun sendToMultiple(connectionIds: List<String>, message: GameMessage) {
+    fun sendToMultiple(connectionIds: List<String>, message: GameMessage) = context.launch {
         connectionIds.forEach { id ->
             connections[id]?.specificFlow?.emit(message)
         }

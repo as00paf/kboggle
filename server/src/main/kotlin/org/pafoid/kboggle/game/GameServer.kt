@@ -9,12 +9,14 @@ import game.Boggle
 import game.BoggleConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.pafoid.kboggle.extensions.removeAccents
 import org.pafoid.kboggle.game.state.GameState
 import org.pafoid.kboggle.web.SocketService
 import java.util.*
 import kotlin.concurrent.schedule
+import kotlin.time.Duration.Companion.seconds
 
 class GameServer(private val config: BoggleConfig, private val socketService:SocketService) {
     var gameState = GameState.INIT
@@ -33,6 +35,8 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
 
     private var board: Board? = null
 
+    private var gameJob: Job = Job()
+
     fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name, winners) }
 
     init {
@@ -43,7 +47,10 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
         currentTime = config.gameLength
 
         CoroutineScope(Dispatchers.IO).launch {
-            solver.dictionary = solver.loadWordsFromResources(Boggle.DICTIONARY).filter { it.length >= 3 }.map { it.removeAccents() }
+            solver.dictionary = solver.loadWordsFromResources(Boggle.DICTIONARY)
+                .filter { it.length >= 3 }
+                .map { it.removeAccents() }
+                .toSet()
             startGame()
         }
 
@@ -51,40 +58,39 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
     }
 
     private fun startGame() {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentMaxScore = 0
-            while(currentMaxScore == 0) {
-                board = Board()
-                currentWords.clear()
-                currentWords.addAll(solver.solve(board!!))
-                currentMaxScore = calculateScore(currentWords)
-            }
+        gameJob.cancel()
+        gameJob = CoroutineScope(Dispatchers.IO).launch {
+            board = Board()
+            currentWords.clear()
+            currentWords.addAll(solver.solve(board!!))
+            currentMaxScore = calculateScore(currentWords)
 
             println("Board solved, ${currentWords.size} words are possible for a total of $currentMaxScore points")
+            println("Starting a new game")
 
             timer.cancel()
-            println("Starting a new game")
             isGameStarted = true
-            changeGameState(GameState.STARTED)
-
             currentTime = config.gameLength
             timer = Timer()
             timer.schedule(0, config.interval) {
                 gameLoop()
             }
+
+            changeGameState(GameState.STARTED)
             println("Game started")
         }
+
     }
 
     private fun gameLoop() {
-        print("Time:$currentTime\r")
-
         if (currentTime == 0) {
             if(isGameStarted) endGame()
             return
         }
 
         currentTime--
+        logMemoryUsage()
+        print("Time:${currentTime.seconds}\r")
     }
 
     private fun endGame() {
@@ -109,7 +115,7 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
             waitForRestart()
         }
 
-        CoroutineScope(Dispatchers.IO).launch { socketService.sendToAll(Sync(data())) }
+        socketService.sendToAll(Sync(data()))
     }
 
     private fun waitForRestart() {
@@ -141,7 +147,7 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
 
     private fun changeGameState(newState: GameState) {
         gameState = newState
-        CoroutineScope(Dispatchers.IO).launch { socketService.sendToAll(Sync(data())) }
+        socketService.sendToAll(Sync(data()))
     }
 
     private fun calculateScore(words: List<String>): Int {
@@ -183,10 +189,17 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
         users.find { it.id == data.userId }?.let { user ->
             user.score += points
             if(points > 0) user.foundWords.add(data.word)
+            println("${user.name} successfully guessed the word : ${data.word} and scored $points points")
         }
 
-        println("User[${data.userId}] successfully guessed the word : ${data.word} and scored $points points")
-
         return points
+    }
+
+    fun logMemoryUsage() {
+        val runtime = Runtime.getRuntime()
+        val usedMB = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024
+        val maxMB = runtime.maxMemory() / 1024 / 1024
+        val freeMB = runtime.freeMemory() / 1024 / 1024
+        print("Memory: Used=${usedMB}MB, Free=${freeMB}MB, Max=${maxMB}MB\t")
     }
 }
