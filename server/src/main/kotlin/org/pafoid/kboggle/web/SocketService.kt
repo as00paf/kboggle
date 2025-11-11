@@ -43,7 +43,7 @@ class SocketService {
     private val connections = ConcurrentHashMap<String, Connection>()
 
     fun start() {
-        embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0"){
+        embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0") {
             install(ContentNegotiation) {
                 json()
             }
