@@ -36,5 +36,5 @@ data class Sync(val gameData: Data): GameMessage()
 
 @Serializable
 @SerialName("WordGuessed")
-data class WordGuessed(val type: String, val word: String?, val points:Int?, val gameData: Data)
+data class WordGuessed(val word: String?, val points:Int?, val gameData: Data): GameMessage()
 

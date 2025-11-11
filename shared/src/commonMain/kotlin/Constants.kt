@@ -1,1 +1,3 @@
-const val SERVER_PORT = 8080
+object Constants {
+    const val SERVER_PORT = 8080
+}

@@ -1,5 +1,9 @@
 TODO: 
 
+- Refactor server's Application.kt : 
+  - Server
+  - 
+
 - Compose stuff:
   - GameUI mobile
   - GameUI other

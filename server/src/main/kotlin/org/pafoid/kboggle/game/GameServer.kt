@@ -1,6 +1,7 @@
 package org.pafoid.kboggle.game
 
 import data.Data
+import data.Sync
 import data.User
 import data.WordGuess
 import game.Board
@@ -9,12 +10,13 @@ import game.BoggleConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.pafoid.kboggle.extensions.removeAccents
 import org.pafoid.kboggle.game.state.GameState
-import java.text.Normalizer
+import org.pafoid.kboggle.web.SocketService
 import java.util.*
 import kotlin.concurrent.schedule
 
-class GameServer(private val config: BoggleConfig, private val sync:suspend ()->Unit) {
+class GameServer(private val config: BoggleConfig, private val socketService:SocketService) {
     var gameState = GameState.INIT
 
     val users = mutableListOf<User>()
@@ -23,17 +25,18 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
     private val currentWords = mutableListOf<String>()
     private var currentMaxScore = 0
     private var currentTime = config.gameLength
-    private val solver = Solver()
-    private var timer = Timer()
     private val userFoundWords = mutableListOf<String>()
     private val winners = mutableListOf<User>()
+
+    private val solver = Solver()
+    private var timer = Timer()
 
     private var board: Board? = null
 
     fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name, winners) }
 
     init {
-        println("Game server initialized")
+        println("KBoggle Game server initialized")
     }
 
     fun initGame() {
@@ -43,11 +46,8 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
             solver.dictionary = solver.loadWordsFromResources(Boggle.DICTIONARY).filter { it.length >= 3 }.map { it.removeAccents() }
             startGame()
         }
-    }
 
-    fun String.removeAccents(): String {
-        val normalized = Normalizer.normalize(this, Normalizer.Form.NFD)
-        return normalized.replace("\\p{InCombiningDiacriticalMarks}".toRegex(), "")
+        println("Game initialized")
     }
 
     private fun startGame() {
@@ -61,7 +61,6 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
             }
 
             println("Board solved, ${currentWords.size} words are possible for a total of $currentMaxScore points")
-
 
             timer.cancel()
             println("Starting a new game")
@@ -110,7 +109,7 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
             waitForRestart()
         }
 
-        CoroutineScope(Dispatchers.IO).launch { sync() }
+        CoroutineScope(Dispatchers.IO).launch { socketService.sendToAll(Sync(data())) }
     }
 
     private fun waitForRestart() {
@@ -136,14 +135,16 @@ class GameServer(private val config: BoggleConfig, private val sync:suspend ()->
         timer.schedule(config.restartScreenLength * config.interval) {
             startGame()
         }
+
+        System.gc()
     }
 
     private fun changeGameState(newState: GameState) {
         gameState = newState
-        CoroutineScope(Dispatchers.IO).launch { sync() }
+        CoroutineScope(Dispatchers.IO).launch { socketService.sendToAll(Sync(data())) }
     }
 
-    fun calculateScore(words: List<String>): Int {
+    private fun calculateScore(words: List<String>): Int {
         val onePoint = words.filter { it.length <= 4 }.size
         val twoPoints = words.filter { it.length == 5 }.size * 2
         val threePoints = words.filter { it.length == 6 }.size * 3
