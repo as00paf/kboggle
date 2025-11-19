@@ -84,16 +84,19 @@ class SocketService {
                     val connectionId = UUID.randomUUID().toString()
                     val connection = Connection(connectionId, this)
                     connections[connectionId] = connection
+                    ServerMetrics.updatePeakConnections(connections.size)
 
                     val broadcastJob = launch {
                         broadcastFlow.collect { message ->
                             sendSerialized(message)
+                            ServerMetrics.recordMessage(true)
                         }
                     }
 
                     val specificJob = launch {
                         connection.specificFlow.collect { message ->
                             sendSerialized(message)
+                            ServerMetrics.recordMessage(true)
                         }
                     }
 
@@ -102,6 +105,7 @@ class SocketService {
                             if (frame is Frame.Text) {
                                 val messageResponse = receiveDeserialized<GameMessage>()
                                 incomingMessageFlow.emit(ClientMessage(connectionId, messageResponse))
+                                ServerMetrics.recordMessage(false)
                             }
                         }
                     }.onFailure { exception ->

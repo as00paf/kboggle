@@ -17,7 +17,6 @@ import org.pafoid.kboggle.game.state.GameState
 import org.pafoid.kboggle.web.SocketService
 import java.util.*
 import kotlin.concurrent.schedule
-import kotlin.time.Duration.Companion.seconds
 
 class GameServer(private val config: BoggleConfig, private val socketService:SocketService) {
     var gameState = GameState.INIT
@@ -91,8 +90,7 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
         }
 
         currentTime--
-        logMemoryUsage()
-        print("Time:${currentTime.seconds}\r")
+        //print("Time:${currentTime.seconds}\r")
     }
 
     private fun endGame() {
@@ -119,11 +117,11 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
             waitForRestart()
         }
 
-        changeGameState(GameState.RESTARTING)
+        changeGameState(GameState.RESTARTING) // TODO: test moving this to the schedule call
     }
 
     private fun waitForRestart() {
-        print("Wait time:$currentTime\r")
+        //print("Wait time:$currentTime\r")
         if (currentTime == 0) {
             timer.cancel()
             restartGame()
@@ -197,13 +195,5 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
         }
 
         return points
-    }
-
-    fun logMemoryUsage() {
-        val runtime = Runtime.getRuntime()
-        val usedMB = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024
-        val maxMB = runtime.maxMemory() / 1024 / 1024
-        val freeMB = runtime.freeMemory() / 1024 / 1024
-        print("Memory: Used=${usedMB}MB, Free=${freeMB}MB, Max=${maxMB}MB\t")
     }
 }
