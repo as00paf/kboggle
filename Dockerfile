@@ -17,7 +17,7 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy the built jar from build stage
-COPY --from=build /app/server/build/libs/*-all.jar app.jar
+COPY --from=build /app/server/build/libs/boggle-server-*.jar app.jar
 
 # Expose port (Render uses PORT env var)
 EXPOSE 8080
