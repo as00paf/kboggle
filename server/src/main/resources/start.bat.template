@@ -1,0 +1,7 @@
+@echo off
+echo Starting Boggle Server...
+java -Xmx512m -jar $jarName
+if %ERRORLEVEL% NEQ 0 (
+    echo Server crashed with error code %ERRORLEVEL%
+    pause
+)

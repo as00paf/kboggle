@@ -15,6 +15,10 @@ sealed class GameMessage
 data class JoinGame(val name: String) : GameMessage()
 
 @Serializable
+@SerialName("RejoinGame")
+data class RejoinGame(val name: String) : GameMessage()
+
+@Serializable
 @SerialName("LeaveGame")
 data class LeaveGame(val userId: String) : GameMessage()
 

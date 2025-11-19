@@ -1,5 +1,6 @@
 package org.pafoid.kboggle.game
 
+import Constants.SERVER_PORT
 import data.Data
 import data.Sync
 import data.User
@@ -40,7 +41,8 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
     fun data(): Data { return Data(users, prevUsers, isGameStarted, board, currentWords, currentMaxScore, currentTime, gameState.name, winners) }
 
     init {
-        println("KBoggle Game server initialized")
+        val port = System.getenv("BOGGLE_SERVER_PORT")?.toInt() ?: SERVER_PORT
+        println("KBoggle Game server running on: http://localhost:$port")
     }
 
     fun initGame() {
@@ -94,6 +96,8 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
     }
 
     private fun endGame() {
+        changeGameState(GameState.ENDED)
+
         isGameStarted = false
         println("Game ended, starting a new one in ${config.endScreenLength} seconds")
         timer.cancel()
@@ -109,15 +113,13 @@ class GameServer(private val config: BoggleConfig, private val socketService:Soc
 
 
         currentTime = config.endScreenLength
-        changeGameState(GameState.ENDED)
 
         timer = Timer()
         timer.schedule(0, config.interval) {
-            changeGameState(GameState.RESTARTING)
             waitForRestart()
         }
 
-        socketService.sendToAll(Sync(data()))
+        changeGameState(GameState.RESTARTING)
     }
 
     private fun waitForRestart() {

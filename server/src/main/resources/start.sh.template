@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Starting Boggle Server..."
+java -Xmx512m -jar $jarName

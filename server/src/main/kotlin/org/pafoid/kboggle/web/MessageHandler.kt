@@ -4,6 +4,7 @@ import data.Chat
 import data.GameJoined
 import data.JoinGame
 import data.LeaveGame
+import data.RejoinGame
 import data.Sync
 import data.User
 import data.WordGuess
@@ -22,6 +23,7 @@ class MessageHandler(private val socketService: SocketService, private val gameS
             socketService.sharedIncomingMessageFlow.collectLatest { clientMessage ->
                 when(clientMessage.message){
                     is JoinGame -> handleJoinGame(clientMessage.sessionId, clientMessage.message)
+                    is RejoinGame -> handleRejoinGame(clientMessage.sessionId, clientMessage.message)
                     is WordGuess -> handleWordGuess(clientMessage.sessionId, clientMessage.message)
                     is Chat -> handleChatMessage(clientMessage.message)
                     is LeaveGame -> handleLeaveGame(clientMessage.message)
@@ -54,6 +56,11 @@ class MessageHandler(private val socketService: SocketService, private val gameS
             sync()
             socketService.sendToConnection(sessionId, GameJoined(newUser.name, gameServer.data()))
         }
+    }
+
+    private fun handleRejoinGame(sessionId: String, data: RejoinGame) {
+        println("handleRejoinGame")
+        handleJoinGame(sessionId, JoinGame(data.name))
     }
 
     private fun handleWordGuess(sessionId: String, data: WordGuess) {

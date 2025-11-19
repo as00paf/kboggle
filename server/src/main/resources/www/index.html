@@ -15,8 +15,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/client.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script type="module" src="js/App.js"></script>
 
 </head>
 <body>
@@ -28,10 +28,14 @@
     <div class="input-group">
         <label for="username">Nom d'utilisateur:</label>
         <input type="text" id="username" name="username" placeholder="Nom de joueur" autocomplete="off" required>
-        <button type="button" id="joinButton" onclick="joinGame()">Jouer au Boggle!</button>
+        <button type="button" id="joinButton">Jouer au Boggle!</button>
     </div>
 </div>
 
+<!-- Header -->
+<div id="header" class="header">
+    <span id="status" class="status">Disconnected</span>
+</div>
 
 <!-- Content -->
 <div id="content" class="container">
@@ -92,7 +96,7 @@
         <div class="input-group wordform">
             <input id="word" type="text" class="form-control" placeholder="Entrez un mot" autocomplete="off">
             <span class="input-group-btn">
-				<input id="validateButton" onclick="sendWord()" class="btn btn-primary" type="submit" value="ENTRER">
+				<input id="validateButton" class="btn btn-primary" type="submit" value="ENTRER">
 			  </span>
         </div>
 

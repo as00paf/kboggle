@@ -6,6 +6,7 @@ import data.GameJoined
 import data.GameMessage
 import data.JoinGame
 import data.LeaveGame
+import data.RejoinGame
 import data.Sync
 import data.WordGuess
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
@@ -47,7 +48,8 @@ class SocketService {
     private val context = CoroutineScope(Dispatchers.IO)
 
     fun start() {
-        embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0") {
+        val port = System.getenv("BOGGLE_SERVER_PORT")?.toInt() ?: SERVER_PORT
+        embeddedServer(Netty, port = port, host = "0.0.0.0") {
             install(ContentNegotiation) {
                 json()
             }
@@ -57,6 +59,7 @@ class SocketService {
                     serializersModule = SerializersModule {
                         polymorphic(GameMessage::class) {
                             subclass(JoinGame::class)
+                            subclass(RejoinGame::class)
                             subclass(GameJoined::class)
                             subclass(WordGuess::class)
                             subclass(Sync::class)
